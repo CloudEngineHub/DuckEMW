@@ -151,3 +151,49 @@
 - **定稿 `final_4k_v2.mp4`**：3840×2160@50fps，HUD 瞬时读数冲到 **2.06**（0.5s 滑窗口径 1.75，出片用瞬时口径），鸭子全程居中、末段大步腾空。
 - 实例 pro-78811e875f25 已 off（用户验收后指示关机）。
 - 视频文案同步完成（钩子/方法/数据/开源邀请，规避限流词），README 重组为「极速 + 舞蹈」双项目并 push。
+
+## 喙砸核桃 Phase 0：物理标定（2026-09-07）
+
+- **问题**：鸭子（737 g，头/喙组件 jaw_soft 188.8 g）喙部下砸能否达到真核桃破壳力 ~320 N（文献 317–330 N）。
+- **新建**：`walnut.xml`（30×24 mm 椭球、12 g、μ=1.0、freejoint，仿 ball.xml）、`MICRODUCK_WALNUT_CFG`、`scripts/measure_peck_force.py`（CPU 彩排：地面+groundcontact 机器人+核桃，腿 PD 站桩，颈部开环扫掠下砸，自校准落点，记录喙-核桃接触力峰值/喙尖速度/核桃位移）。
+- **核心发现**：
+  1. **峰值力是求解器上界，不收敛**：默认接触（tc=20ms）只有 10–15 N；加固接触（tc=1ms）+ dt=0.5ms 得 ~140 N；dt=0.25ms 得 ~250 N，仍随离散步长爬升。刚体接触无法认证 320 N，需校准的壳体柔顺模型才有定论。
+  2. **能量口径可行**：头喙 0.87 m/s 携 ~71 mJ vs 破壳需 ~15 mJ（Hertz 估算），约 5× 余量——前提是能量打进壳里而不是把核桃打飞。
+  3. **可达性**：颈部 alone 从站姿永远够不到地（FK 证明：直立喙最低 88 mm，0.07 深蹲仍 38 mm）——必须 GroundPick 式深蹲+前倾；开环站姿下砸只有在摔倒途中（躯干倾 43–57°）才够到核桃。
+  4. **逃逸**：第一接触步核桃就侧滑弹出（0.5ms 内 0.35 m/s，最终滑出 3–7 cm），μ=1.0 也压不住椭球滚弹。RL 任务需考虑固定核桃（凹槽/夹持）或改目标为"击飞"。
+  5. 下砸是**舵机限速**的（BAM kp_fw=200）：命令 0.05s/0.2s 下摆物理上都花 ~0.35s，喙尖速度 0.8–0.9 m/s 封顶（旧斜线路径能到 1.07）。
+- **测试**：`uv run --with pytest pytest tests/ -q` → 246 passed，2 failed 为先前已存在的 test_hf_jobs_flag.py 环境问题（stash 验证与本次改动无关；用 `PYTHONPATH=src` 可绕过）。
+
+## 喙砸最大力测量（BeakForce，2026-09-07 晚）
+
+- **背景**：Peck v1-v4（砸核桃）连环确诊后，用户锁定核心任务为「测鸭子嘴下砸的最大力」。新任务 `Mjlab-BeakForce-Flat-MicroDuck`：地面即测力台（无核桃/接近/相位钟），主奖励 `beak_ground_force_progress`（Δ-max 峰值力塑形，cap 50 N），站立+深蹲混合出生，episode 4s。评估 `scripts/eval_beakforce.py`（512 envs，HUD 视频：逐帧 F/MAX/喙速/动量/动能）。
+- **v1（无门控）**：峰值力 max 34.0 / 均值 13.6 N，但视频+数据确诊**主要是准静态按压**（峰值力发生在 ~0.09 m/s）——Δ-max 被"深蹲用体重压喙"hack。喙尖速度 max 1.90 m/s（RL 自己发现全身鞭打，超 Phase 0 纯脖子 0.87）。
+- **v2（撞击门控 min_impact_speed=0.3，力值 × clamp(|vz|/0.3,0,1)，按压零分）**：**纯砸击峰值 max 53.7 N @ 0.80 m/s（KE 59.8 mJ，4× 真核桃破壳所需 ~15 mJ）**，总峰值 p99 34.6 N，动量 max 150 g·m/s，slam-hits 3% of episodes。动作从静态按压变为泵动式鞭打（视频 HUD 可见 KE 摆动 0→60 mJ）。
+- **核心结论**：鸭子嘴下砸最大力（训练仿真口径 warp/dt=5ms）**ballistic 53.7 N**；能量口径 59.8 mJ 远超碎核桃所需 → 真核桃"能不能碎"答案倾向**能**，320 N 瞬时力的认证需细步长台架或真机（刚体接触峰值不随 dt 收敛，Phase 0 已证）。
+- **bug 备忘**：reward 函数的 SceneEntityCfg 参数必须显式写在 cfg params 里（reward manager 只解析显式参数，函数默认值不解析 → site_ids 变 slice 报 TypeError）；测试已锁。
+- 产物：artifacts/beakforce_v1|v2/（ckpt、ONNX、评估 HUD 视频、训练日志）。
+
+## Basketball 平衡：续训 Hannes b11 并破其存活率纪录（2026-09-08 午）
+
+- **任务**：`HannesVonEssen/microduck-basketball`（站 7 号篮球上平衡+速度命令跟踪，**盲 LSTM256** actor，球状态不进观测；源 Vottivott/microduck-playground@aa5bd790）。部署契约：61D obs + h/c 双隐状态 [1,1,256]，50Hz，需 `model_api: 2`（runtime PR #231）。
+- **环境**：HF 快照 sha256 校验过（README 一项失败，checkpoint 完好）；source.tar.gz 解包 playground-bb/，依赖与现有 venv 全同（mjlab 1.3.0/torch 2.9.1）→ PYTHONPATH 复用零安装。**坑**：source.tar.gz 缺 `video_effects.py`（上游从未提交，render_checkpoint.py 却 import 它）→ 本地补了 no-op stub 才能渲染。
+- **训练**：b11@6999 官方续训配方 500 轮（4096 envs、LR 2e-5 固定、action-rate −0.2、推搡 1.5-3s、seed 42），~19min/¥0.6。冒烟 64×5 先过。
+- **验收（匹配协议 3 seeds×1024 envs×60s 推搡电池）**：
+  | ckpt | 60s 存活 | 首次摔倒 | vs b11 (97.01%/92) |
+  |---|---|---|---|
+  | **7375** | **98.34%** (3021/3072) | 51 | **+1.33pp，摔倒 −45%** |
+  | 7250 | 97.79% (3004/3072) | 68 | +0.78pp |
+  | 7498（最终） | 95.74% (2941/3072) | 131 | −1.27pp，但 yaw MAE 1.196/平滑 0.2236 优于 b11 |
+- **教训复诵（第三次同款）**：最终档 ≠ 最佳档——7498 回退，7375 才是冠军（Hannes b9 final7249 回退选 6500、我们 sprint/beakforce 续训回弹全是一个模式）。**存档点要逐个跑验证电池再选定**。
+- **ONNX parity**：7375 40 步含 reset 最大误差 2.15e-6 ✅；30s 渲染片两档均零摔倒（bb_7375/bb_7498_preview_30s.mp4）。
+- 产物：artifacts/basketball_v1/（7375+7498 ckpt/ONNX、9 份评估 JSON、训练/评估日志、30s 片 ×3）。**定稿片 `bb_7375_close_10s_4k.mp4`**（3840×2160，0.9m 机位 -15°、follow-dz -0.05 底部留字幕位）：video_effects stub v2（关命令箭头 debug_vis + shadowsize 4096/光源朝相机倾）——箭头消失、地板 speckle 伪影清除、全程零摔倒。1080p 字幕版 bb_7375_close_10s_1080p_subtitle.mp4。
+- **收官**：实例 pro-78811e875f25 已 off（15:28，用户指示），余额 ¥57.76。basketball 全线（下载+冒烟+训练 500 轮+3 档验收电池+渲染 ×5）约 ¥5。
+
+## 冲纪录：v3 失败 + v2 续训破纪录（2026-09-08 凌晨）
+
+- **v3（门控 0.3→0.5 m/s 开局 + cap 100 + v_max 2.0，从零）**：**失败**。纯砸击 0% 命中、峰值 39.7 N 不如 v2。教训复诵（AGENTS.md 原话）：技能探索期上重税，"什么都不做"就是 argmax。cfg 注释已记。
+- **v2 同配方续训 2000（总 4000 轮，军规续训路径）**：`--agent.load-checkpoint model_1999 --agent.resume True`，开跑即 0.333 完美接棒（v2 终点 0.34），收官 `beak_downward_speed` 0.366。
+- **新纪录（512 envs × 5s 部署侧实测）**：**ballistic 峰值 73.6 N @ 1.17 m/s，KE 128.3 mJ（8.5× 破核桃门槛），动量 220 g·m/s**（v2 旧纪录 53.7 N @ 0.80 m/s）。slam-hits 仍少（个位数 env），峰值力 p99 32.9 N。
+- **混沌漂移注意（复现 Sprint 教训）**：warp GPU 求解器非比特确定——73.6 N 是首轮评估的真实读数，同 seed 复测漂到 39.3 N（纪录量级不变，具体数字看哪次 rollout）。评估脚本已加 TOP ballistic env 打印便于跟拍最强 env。
+- 产物：artifacts/beakforce_v3/（失败存档）、artifacts/beakforce_v2r/（新纪录 ckpt/ONNX/视频/日志）。
+- 成本：v3 ¥2.3 + 续训 ¥2.3；实例 pro-78811e875f25 保持开机（用户指示暂不关机）。

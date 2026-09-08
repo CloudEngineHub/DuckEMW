@@ -1,6 +1,6 @@
 # DuckEMW
 
-教 MicroDuck（约 800 g、25 cm 双足机器人，14 个 XL330 舵机）挑战两件事：**平地极速冲刺** 和 **跟着音乐跳 DJ**——RL 训练的奔跑/舞蹈策略 + 评估/出片管线。
+教 MicroDuck（约 800 g、25 cm 双足机器人，14 个 XL330 舵机）挑战三件事：**平地极速冲刺**、**跟着音乐跳 DJ**、**踩篮球杂耍平衡**——RL 训练的运动策略 + 评估/出片管线。
 
 基于 [pollen-robotics/microduck](https://github.com/pollen-robotics/microduck)（机器人本体/runtime）与 [pollen-robotics/microduck_rl](https://github.com/pollen-robotics/microduck_rl)（mjlab/MuJoCo Warp + PPO 训练框架，本仓库以 fork + submodule 方式扩展）。
 
@@ -31,6 +31,21 @@
 
 极限探索结论：单通道极限为深蹲 53 mm / 摆胯 ±22°，但 128 BPM 下不可兼得（XL330 舵机扭矩/转速与重心几何的真实约束，已由 BAM 执行器模型在仿真中验证）。
 
+## 篮球平衡项目（2026-09-08，basketball 策略）
+
+鸭子站上**自由滚动的 7 号篮球**，靠本体感觉保持平衡并跟踪速度命令——**盲 LSTM 策略**：actor 看不到球的任何状态，靠循环记忆从历史本体感觉推断球的动力学。
+
+| 指标（3 seeds × 1024 envs × 60s 推搡电池） | 本仓库（model_7375） | Hannes b11 发布值 |
+|---|---|---|
+| 60s 存活率 | **98.34%**（3021/3072） | 97.01%（2980/3072） |
+| 首次摔倒 | **51 次** | 92 次 |
+| ONNX parity（40 步含 reset） | 2.15e-6 | 1.43e-6（同量级） |
+| 展示片 | `bb_7375_close_10s_4k.mp4`（4K，踩球特写，底部留字幕位） | — |
+
+- **方法**：续训 [HannesVonEssen/microduck-basketball](https://huggingface.co/HannesVonEssen/microduck-basketball) 发布的 b11@6999 checkpoint（官方续训配方：4096 envs × 500 轮、LR 2e-5、action-rate −0.2、1.5–3s 推搡扰动），然后对 3 个存档点逐个跑匹配评估电池再选定——**最终档 7498 反而回退到 95.74%，冠军是中间档 7375**（第三次验证本项目铁律：最终档 ≠ 最佳档）。
+- **部署注意**：LSTM 策略的 ONNX 带 h/c 双隐状态（[1,1,256]），真机需要 runtime 的 recurrent 支持（`model_api: 2`，[runtime PR #231](https://github.com/pollen-robotics/microduck/pull/231)）。
+- 训练源码 [Vottivott/microduck-playground](https://github.com/Vottivott/microduck-playground) @ `aa5bd790`（与 microduck_rl 依赖全同，PYTHONPATH 复用零安装）。
+
 ## 仓库结构
 
 ```
@@ -42,7 +57,7 @@
 │   ├── timeline.py            # 节拍 → 编舞时间线（支持 --map 显式编舞）
 │   └── songs/                 # beats/timeline（音频因版权不入库）
 ├── autodl/setup.sh            # AutoDL 实例一键环境配置
-├── docs/                      # playbook 提炼、设计笔记、训练日志（舞蹈 v1-v11 + 极速全程）
+├── docs/                      # playbook 提炼、设计笔记、训练日志（舞蹈 v1-v11 + 极速 + 喙砸 + 篮球全程）
 └── AGENTS.md                  # 项目铁律（上游同步/修改必重训/成本纪律/验证纪律）
 ```
 
@@ -85,13 +100,14 @@ uv run python scripts/stage_show.py --policy dance.onnx \
 
 - 极速项目：基线测量 + 4 轮配方迭代 + 13.5k 轮大训 + 评估/出片，约 **¥70**
 - 舞蹈项目：11 轮训练 + 环境配置，约 **¥35**；单轮快训（1000 步）约 ¥1、正式（4000 步）约 ¥4
+- 篮球项目：HF 快照下载 + 冒烟 + 500 轮续训 + 3 档 × 3 seed 验收电池 + 5 次渲染，约 **¥5**
 
 详见 `docs/03-training-log.md`（两项目全程逐轮记录）。`artifacts/`（checkpoint、ONNX、评估 JSON、成片）体积大不入库。
 
 ## 致谢
 
 - [pollen-robotics/microduck](https://github.com/pollen-robotics/microduck) 与 [microduck_rl](https://github.com/pollen-robotics/microduck_rl)——机器人、训练框架与 sim2real 配方（其 AGENTS.md 是本项目的奖励设计圣经）
-- [Vottivott/microduck-playground](https://github.com/Vottivott/microduck-playground)（Hannes von Essen）——running 极速配方与评估电池口径
+- [Vottivott/microduck-playground](https://github.com/Vottivott/microduck-playground)（Hannes von Essen）——running 极速配方与评估电池口径、[microduck-basketball](https://huggingface.co/HannesVonEssen/microduck-basketball) 盲 LSTM 平衡配方与发布 checkpoint
 - [mjlab](https://github.com/mujocolab/mjlab)、[BAM](https://github.com/Rhoban/bam)
 
 License: 代码 Apache 2.0（遵循上游）；3D 模型文件 CC BY-SA-NC（上游资产）。

@@ -14,3 +14,8 @@ __pycache__/
 
 # 验证产物（视频/CSV 体积大，不入库）
 artifacts/
+
+# 调试会话导出
+kimi-debug-session_*/
+kimi-debug-session_*.zip
+.DS_Store
