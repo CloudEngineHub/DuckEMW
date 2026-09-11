@@ -1,0 +1,37 @@
+{
+  "absolute_lateral_displacement_m": {
+    "mean": 1.11049485206604,
+    "median": 1.1623051166534424,
+    "p90": 1.8526452779769897
+  },
+  "actor_observation_dim": 61,
+  "checkpoint": "logs/rsl_rl/stilt_locomotion/2026-09-10_00-32-48_stilt-h140cm-b050/model_4271.pt",
+  "command_speed_mps": 0.15,
+  "duration_s": 10.0,
+  "final_absolute_heading_error_deg": {
+    "mean": 75.18627159101514,
+    "median": 68.998297787902,
+    "p90": 152.42069834806367
+  },
+  "flight_events_per_second": 0.0013111256994307041,
+  "flight_fraction": 0.0006503307959064841,
+  "forward_speed_mps": {
+    "clean_survivor_mean": 0.18119435012340546,
+    "mean": 0.17842234671115875,
+    "median": 0.16999362409114838,
+    "p10": 0.11483889073133469,
+    "p90": 0.2670139968395233
+  },
+  "initial_heading_displacement_speed_mps": {
+    "mean": 0.056544914841651917,
+    "median": 0.07312940061092377,
+    "p10": -0.08385287970304489
+  },
+  "max_tilt_deg_median": 3.7059155021290557,
+  "mean_absolute_heading_error_deg": 53.75166606974899,
+  "mean_absolute_lateral_speed_mps": 0.07067462801933289,
+  "mean_absolute_yaw_rate_radps": 0.43712377548217773,
+  "num_envs": 1024,
+  "survival_fraction": 0.9892578125,
+  "task_id": "Mjlab-Stilt-Flat-MicroDuck"
+}

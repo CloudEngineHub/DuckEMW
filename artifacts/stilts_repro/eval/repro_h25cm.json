@@ -1,0 +1,37 @@
+{
+  "absolute_lateral_displacement_m": {
+    "mean": 0.6386634111404419,
+    "median": 0.500846803188324,
+    "p90": 1.3417367935180664
+  },
+  "actor_observation_dim": 61,
+  "checkpoint": "logs/rsl_rl/stilt_locomotion/2026-09-09_23-37-30_stilt-h25cm-b050/model_2786.pt",
+  "command_speed_mps": 0.15,
+  "duration_s": 10.0,
+  "final_absolute_heading_error_deg": {
+    "mean": 37.288844037794334,
+    "median": 31.20881454432408,
+    "p90": 76.16022924590229
+  },
+  "flight_events_per_second": 0.0,
+  "flight_fraction": 0.0,
+  "forward_speed_mps": {
+    "clean_survivor_mean": 0.17715921998023987,
+    "mean": 0.17715921998023987,
+    "median": 0.1610656976699829,
+    "p10": 0.11546730995178223,
+    "p90": 0.2876746356487274
+  },
+  "initial_heading_displacement_speed_mps": {
+    "mean": 0.1460684835910797,
+    "median": 0.14051297307014465,
+    "p10": 0.07996130734682083
+  },
+  "max_tilt_deg_median": 3.1655152038658785,
+  "mean_absolute_heading_error_deg": 22.15822991288315,
+  "mean_absolute_lateral_speed_mps": 0.05754232034087181,
+  "mean_absolute_yaw_rate_radps": 0.1989211142063141,
+  "num_envs": 1024,
+  "survival_fraction": 1.0,
+  "task_id": "Mjlab-Stilt-Flat-MicroDuck"
+}

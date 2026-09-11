@@ -1,3 +1,6 @@
 [submodule "third_party/microduck_rl"]
 	path = third_party/microduck_rl
 	url = https://github.com/emwstudio/microduck_rl
+[submodule "third_party/microduck-playground"]
+	path = third_party/microduck-playground
+	url = https://github.com/emwstudio/microduck-playground

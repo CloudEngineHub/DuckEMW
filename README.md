@@ -1,6 +1,6 @@
 # DuckEMW
 
-教 MicroDuck（约 800 g、25 cm 双足机器人，14 个 XL330 舵机）挑战三件事：**平地极速冲刺**、**跟着音乐跳 DJ**、**踩篮球杂耍平衡**——RL 训练的运动策略 + 评估/出片管线。
+教 MicroDuck（约 800 g、25 cm 双足机器人，14 个 XL330 舵机）挑战四件事：**平地极速冲刺**、**跟着音乐跳 DJ**、**踩篮球杂耍平衡**、**踩高跷（10cm→2m 课程复现）**——RL 训练的运动策略 + 评估/出片管线。
 
 基于 [pollen-robotics/microduck](https://github.com/pollen-robotics/microduck)（机器人本体/runtime）与 [pollen-robotics/microduck_rl](https://github.com/pollen-robotics/microduck_rl)（mjlab/MuJoCo Warp + PPO 训练框架，本仓库以 fork + submodule 方式扩展）。
 
@@ -46,18 +46,35 @@
 - **部署注意**：LSTM 策略的 ONNX 带 h/c 双隐状态（[1,1,256]），真机需要 runtime 的 recurrent 支持（`model_api: 2`，[runtime PR #231](https://github.com/pollen-robotics/microduck/pull/231)）。
 - 训练源码 [Vottivott/microduck-playground](https://github.com/Vottivott/microduck-playground) @ `aa5bd790`（与 microduck_rl 依赖全同，PYTHONPATH 复用零安装）。
 
+## 踩高跷项目（2026-09-10，stilts 课程复现）
+
+复现 Hannes 的 [microduck-stilts](https://huggingface.co/HannesVonEssen/microduck-stilts) 完整课程（`Mjlab-Stilt-Flat-MicroDuck`，37 级：先在 2cm 上把跷底 blend 0→0.25→0.50（平板→圆杆），再逐级加高到 2m，每级从上阶段 checkpoint 续训；AutoDL 4090D 约 4.5h ≈ ¥8.5）。8 个里程碑门禁（1024 envs × 10s，cmd 0.15 m/s，seed 123）全部通过：
+
+| 高度 | 10cm | 15cm | 20cm | 25cm | 50cm | 1.0m | 1.4m | 2.0m |
+|---|---|---|---|---|---|---|---|---|
+| survival | 99.8% | 99.9% | 100% | 100% | 100% | 100% | 98.9% | 99.9% |
+| 均速 (m/s) | 0.167 | 0.163 | 0.179 | 0.177 | 0.176 | 0.204 | 0.178 | 0.153 |
+| 倾斜中位 | 3.55° | 3.38° | 3.32° | 3.17° | 3.29° | 3.69° | 3.71° | 3.15° |
+
+- **出片**：8 档 × 6s 4K@50fps 合集 `stilts_all_heights_4k.mp4`，mjlab 训练环境内无头录制（`third_party/microduck-playground/scripts/record_stilt_play.py`，纯新增脚本）。
+- **验证纪律教训**：CPU MuJoCo 彩排（infer_policy 式，即使补上 BAM M6）会让 10cm 策略 ~2.4s 摔倒，而同一 checkpoint 在真实 mjlab 环境 32 envs × 10s survival 100%——高跷策略一律在训练环境内验证/出片。
+- 50cm 以上为纯仿真研究，不作为打印硬件依据（原作者同此声明）；暂无实体机器人，未上真机。
+- 课程脚本 `autodl/run_stilt_curriculum.sh`（37 级、断点续跑）；全程记录 `docs/04-stilts-repro.md`；门禁数据 `artifacts/stilts_repro/eval/repro_*.json`（已入库）。
+
 ## 仓库结构
 
 ```
 ├── third_party/microduck_rl   # fork（emwstudio/microduck_rl，develop 分支）
 │   └── 新增 Mjlab-Sprint-Flat-MicroDuck / Mjlab-Dance-Flat-MicroDuck 任务、
 │       eval_sprint_speed.py（速度电池+直立峰值口径）、sprint_show.py、stage_show.py
+├── third_party/microduck-playground  # fork（emwstudio/microduck-playground）
+│   └── 新增 record_stilt_play.py（mjlab 环境内无头 4K 录制）、render_stilt_video.py（CPU 彩排反例）
 ├── dance/
 │   ├── beats.py               # librosa 节拍/BPM 提取 → beats.json
 │   ├── timeline.py            # 节拍 → 编舞时间线（支持 --map 显式编舞）
 │   └── songs/                 # beats/timeline（音频因版权不入库）
-├── autodl/setup.sh            # AutoDL 实例一键环境配置
-├── docs/                      # playbook 提炼、设计笔记、训练日志（舞蹈 v1-v11 + 极速 + 喙砸 + 篮球全程）
+├── autodl/                    # setup.sh（一键环境）+ run_stilt_curriculum.sh（高跷 37 级课程）
+├── docs/                      # playbook 提炼、设计笔记、训练日志（舞蹈 v1-v11 + 极速 + 喙砸 + 篮球 + 高跷）
 └── AGENTS.md                  # 项目铁律（上游同步/修改必重训/成本纪律/验证纪律）
 ```
 
@@ -89,7 +106,16 @@ uv run scripts/export.py Mjlab-Dance-Flat-MicroDuck --checkpoint-file <model.pt>
 uv run python scripts/dance_to_timeline.py --policy dance.onnx \
     --timeline ../../dance/songs/<歌>.timeline.json --record out.mp4 --save-csv out.csv
 
-# 5. 出片（冲刺跟拍 / 舞台 N 鸭齐舞）
+# 5. 高跷课程复现（AutoDL；含门禁评估，断点续跑）
+bash autodl/run_stilt_curriculum.sh
+# 高跷 4K 出片（本地 CPU，mjlab 环境内无头录制）
+cd third_party/microduck-playground
+MICRODUCK_STILT_HEIGHT_CM=10 MICRODUCK_STILT_BLEND=0.5 PYTHONPATH=src \
+uv run --no-sync python scripts/record_stilt_play.py \
+    --checkpoint-file <model.pt> --duration-s 6 --width 3840 --height 2160 --out out.mp4
+cd ../microduck_rl
+
+# 6. 出片（冲刺跟拍 / 舞台 N 鸭齐舞）
 uv run python scripts/sprint_show.py --policy sprint.onnx   # 成片输出到 artifacts/sprint_show/
 uv run python scripts/stage_show.py --policy dance.onnx \
     --timeline ../../dance/songs/<歌>.timeline.json \
@@ -101,13 +127,14 @@ uv run python scripts/stage_show.py --policy dance.onnx \
 - 极速项目：基线测量 + 4 轮配方迭代 + 13.5k 轮大训 + 评估/出片，约 **¥70**
 - 舞蹈项目：11 轮训练 + 环境配置，约 **¥35**；单轮快训（1000 步）约 ¥1、正式（4000 步）约 ¥4
 - 篮球项目：HF 快照下载 + 冒烟 + 500 轮续训 + 3 档 × 3 seed 验收电池 + 5 次渲染，约 **¥5**
+- 高跷项目：37 级课程 4.5h + 8 里程碑门禁评估，约 **¥8.5**（4K 出片为本地 CPU，零租金）
 
 详见 `docs/03-training-log.md`（两项目全程逐轮记录）。`artifacts/`（checkpoint、ONNX、评估 JSON、成片）体积大不入库。
 
 ## 致谢
 
 - [pollen-robotics/microduck](https://github.com/pollen-robotics/microduck) 与 [microduck_rl](https://github.com/pollen-robotics/microduck_rl)——机器人、训练框架与 sim2real 配方（其 AGENTS.md 是本项目的奖励设计圣经）
-- [Vottivott/microduck-playground](https://github.com/Vottivott/microduck-playground)（Hannes von Essen）——running 极速配方与评估电池口径、[microduck-basketball](https://huggingface.co/HannesVonEssen/microduck-basketball) 盲 LSTM 平衡配方与发布 checkpoint
+- [Vottivott/microduck-playground](https://github.com/Vottivott/microduck-playground)（Hannes von Essen）——running 极速配方与评估电池口径、[microduck-basketball](https://huggingface.co/HannesVonEssen/microduck-basketball) 盲 LSTM 平衡配方与发布 checkpoint、[microduck-stilts](https://huggingface.co/HannesVonEssen/microduck-stilts) 踩高跷课程 lineage 与 TRAINING.md
 - [mjlab](https://github.com/mujocolab/mjlab)、[BAM](https://github.com/Rhoban/bam)
 
 License: 代码 Apache 2.0（遵循上游）；3D 模型文件 CC BY-SA-NC（上游资产）。

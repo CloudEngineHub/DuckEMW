@@ -15,6 +15,15 @@ __pycache__/
 # 验证产物（视频/CSV 体积大，不入库）
 artifacts/
 
+# 例外：高跷复现的评估数据/课程日志（小文件，随视频文案开源）
+!artifacts/
+artifacts/*
+!artifacts/stilts_repro/
+artifacts/stilts_repro/*
+!artifacts/stilts_repro/eval/
+!artifacts/stilts_repro/completed.tsv
+!artifacts/stilts_repro/curriculum_status.log
+
 # 调试会话导出
 kimi-debug-session_*/
 kimi-debug-session_*.zip
