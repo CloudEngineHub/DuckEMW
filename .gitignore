@@ -28,6 +28,7 @@ artifacts/stilts_repro/*
 !artifacts/swing360_v3/
 artifacts/swing360_v3/*
 !artifacts/swing360_v3/swing360_4k_7turns_metrics.json
+!artifacts/swing360_v3/swing360_v3_60s.json
 
 # 调试会话导出
 kimi-debug-session_*/

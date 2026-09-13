@@ -1,0 +1,140 @@
+{
+  "checkpoint": "logs/rsl_rl/microduck_swing360/2026-09-12_19-59-43_microduck_swing360/model_3999.pt",
+  "duration_s": 60.0,
+  "seed": 101,
+  "num_envs": 16,
+  "envs_over_the_top": 12,
+  "envs_with_full_turn": 11,
+  "max_completed_full_turns": 7,
+  "median_max_abs_angle_deg": 747.5987927358525,
+  "per_env": [
+    {
+      "env": 0,
+      "max_abs_angle_deg": 2878.962765653673,
+      "over_the_top": true,
+      "completed_full_turns": 7,
+      "final_angle_deg": 2878.962765653673,
+      "peak_pivot_rate_rad_s": 9.51430892944336
+    },
+    {
+      "env": 1,
+      "max_abs_angle_deg": 143.44363045775418,
+      "over_the_top": false,
+      "completed_full_turns": 0,
+      "final_angle_deg": 82.94709452600964,
+      "peak_pivot_rate_rad_s": 8.854966163635254
+    },
+    {
+      "env": 2,
+      "max_abs_angle_deg": 747.5987927358525,
+      "over_the_top": true,
+      "completed_full_turns": 2,
+      "final_angle_deg": 747.5987927358525,
+      "peak_pivot_rate_rad_s": 9.57703971862793
+    },
+    {
+      "env": 3,
+      "max_abs_angle_deg": 174.9479872874647,
+      "over_the_top": false,
+      "completed_full_turns": 0,
+      "final_angle_deg": 169.49716848071438,
+      "peak_pivot_rate_rad_s": 9.074614524841309
+    },
+    {
+      "env": 4,
+      "max_abs_angle_deg": 2008.7042119534433,
+      "over_the_top": true,
+      "completed_full_turns": 5,
+      "final_angle_deg": 2008.7042119534433,
+      "peak_pivot_rate_rad_s": 9.57531452178955
+    },
+    {
+      "env": 5,
+      "max_abs_angle_deg": 139.49358179657406,
+      "over_the_top": false,
+      "completed_full_turns": 0,
+      "final_angle_deg": -106.54037791936373,
+      "peak_pivot_rate_rad_s": 8.72925090789795
+    },
+    {
+      "env": 6,
+      "max_abs_angle_deg": 732.1461727576157,
+      "over_the_top": true,
+      "completed_full_turns": 2,
+      "final_angle_deg": 732.1461727576157,
+      "peak_pivot_rate_rad_s": 9.565943717956543
+    },
+    {
+      "env": 7,
+      "max_abs_angle_deg": 537.2820778504458,
+      "over_the_top": true,
+      "completed_full_turns": 1,
+      "final_angle_deg": 413.7873125996562,
+      "peak_pivot_rate_rad_s": 9.439263343811035
+    },
+    {
+      "env": 8,
+      "max_abs_angle_deg": 2830.7859990222314,
+      "over_the_top": true,
+      "completed_full_turns": 7,
+      "final_angle_deg": 2830.7859990222314,
+      "peak_pivot_rate_rad_s": 9.530216217041016
+    },
+    {
+      "env": 9,
+      "max_abs_angle_deg": 1282.9348677294918,
+      "over_the_top": true,
+      "completed_full_turns": 3,
+      "final_angle_deg": 1282.9348677294918,
+      "peak_pivot_rate_rad_s": 9.499496459960938
+    },
+    {
+      "env": 10,
+      "max_abs_angle_deg": 1449.7740954154522,
+      "over_the_top": true,
+      "completed_full_turns": 4,
+      "final_angle_deg": 1449.7740954154522,
+      "peak_pivot_rate_rad_s": 9.642645835876465
+    },
+    {
+      "env": 11,
+      "max_abs_angle_deg": 146.98960512763634,
+      "over_the_top": false,
+      "completed_full_turns": 0,
+      "final_angle_deg": -47.201005806613594,
+      "peak_pivot_rate_rad_s": 8.908907890319824
+    },
+    {
+      "env": 12,
+      "max_abs_angle_deg": 271.51231384851286,
+      "over_the_top": true,
+      "completed_full_turns": 0,
+      "final_angle_deg": 271.51231384851286,
+      "peak_pivot_rate_rad_s": 9.144042015075684
+    },
+    {
+      "env": 13,
+      "max_abs_angle_deg": 895.3922291665293,
+      "over_the_top": true,
+      "completed_full_turns": 2,
+      "final_angle_deg": 562.2607353433427,
+      "peak_pivot_rate_rad_s": 9.453059196472168
+    },
+    {
+      "env": 14,
+      "max_abs_angle_deg": 537.2004980709992,
+      "over_the_top": true,
+      "completed_full_turns": 1,
+      "final_angle_deg": 306.26967121384706,
+      "peak_pivot_rate_rad_s": 9.436716079711914
+    },
+    {
+      "env": 15,
+      "max_abs_angle_deg": 1977.439212273007,
+      "over_the_top": true,
+      "completed_full_turns": 5,
+      "final_angle_deg": 1796.2706848404664,
+      "peak_pivot_rate_rad_s": 9.473167419433594
+    }
+  ]
+}
