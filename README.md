@@ -1,6 +1,6 @@
 # DuckEMW
 
-教 MicroDuck（约 800 g、25 cm 双足机器人，14 个 XL330 舵机）挑战四件事：**平地极速冲刺**、**跟着音乐跳 DJ**、**踩篮球杂耍平衡**、**踩高跷（10cm→2m 课程复现）**——RL 训练的运动策略 + 评估/出片管线。
+教 MicroDuck（约 800 g、25 cm 双足机器人，14 个 XL330 舵机）挑战五件事：**平地极速冲刺**、**跟着音乐跳 DJ**、**踩篮球杂耍平衡**、**踩高跷（10cm→2m 课程复现）**、**360° 荡秋千（刚性杆全圈）**——RL 训练的运动策略 + 评估/出片管线。
 
 基于 [pollen-robotics/microduck](https://github.com/pollen-robotics/microduck)（机器人本体/runtime）与 [pollen-robotics/microduck_rl](https://github.com/pollen-robotics/microduck_rl)（mjlab/MuJoCo Warp + PPO 训练框架，本仓库以 fork + submodule 方式扩展）。
 
@@ -61,6 +61,21 @@
 - 50cm 以上为纯仿真研究，不作为打印硬件依据（原作者同此声明）；暂无实体机器人，未上真机。
 - 课程脚本 `autodl/run_stilt_curriculum.sh`（37 级、断点续跑）；全程记录 `docs/04-stilts-repro.md`；门禁数据 `artifacts/stilts_repro/eval/repro_*.json`（已入库）。
 
+## 360° 秋千项目（2026-09-12，swing360 策略）
+
+复现 Hannes 的 [microduck-swing](https://huggingface.co/HannesVonEssen/microduck-swing)（柔性吊绳自泵秋千，实测摆幅峰值 **173.2°**——绳子一过水平就松，物理上到不了整圈），改造为**刚性摆杆**全圈任务 `Mjlab-Swing360-MicroDuck`：刚性杆 + 世界固定 y 轴被动铰链（weld 到躯干），过水平后仍能传力，PPO 自己发现泵荡过顶并维持整圈旋转。
+
+| 指标（60s × 16 env 无头电池） | 数值 |
+|---|---|
+| 过顶 | **12/16** |
+| 完整整圈 | **11/16** |
+| 连续整圈 | **7 圈** |
+| 成片峰值 | **2717.8°**（≈7.5 圈，`swing360_4k_7turns.mp4`，4K@25fps 60s，角度 overlay 破纪录变绿） |
+
+- **方法**：同一 61D 部署观测契约，底部静止出生、无相位时钟、无脚本脉冲；pivot 精确运动学仅对 critic/奖励可见。v3 配方从零 4000 轮（4096 envs，AutoDL 4090D 约 2h ≈ ¥4）。
+- **出片管线**（submodule `swing360` 分支）：`render_swing360_play.py`（play 契约渲染，支持 `--width/--height/--seed/--duration/--fps` 与 `--lookat/--distance/--elevation/--azimuth` 机位覆盖）+ `add_swing360_angle_overlay.py`（烧录「最大角度 + 圈数」）。评估用 `evaluate_swing360_checkpoint.py`（过顶/整圈电池，部署侧口径，不看训练指标）。
+- 纯仿真结果，暂无实体机器人，未上真机。
+
 ## 仓库结构
 
 ```
@@ -68,7 +83,8 @@
 │   └── 新增 Mjlab-Sprint-Flat-MicroDuck / Mjlab-Dance-Flat-MicroDuck 任务、
 │       eval_sprint_speed.py（速度电池+直立峰值口径）、sprint_show.py、stage_show.py
 ├── third_party/microduck-playground  # fork（emwstudio/microduck-playground）
-│   └── 新增 record_stilt_play.py（mjlab 环境内无头 4K 录制）、render_stilt_video.py（CPU 彩排反例）
+│   └── 新增 record_stilt_play.py（mjlab 环境内无头 4K 录制）、render_stilt_video.py（CPU 彩排反例）、
+│       Mjlab-Swing360-MicroDuck 刚性杆秋千任务 + evaluate/render/overlay 三件套（swing360 分支）
 ├── dance/
 │   ├── beats.py               # librosa 节拍/BPM 提取 → beats.json
 │   ├── timeline.py            # 节拍 → 编舞时间线（支持 --map 显式编舞）
@@ -115,7 +131,18 @@ uv run --no-sync python scripts/record_stilt_play.py \
     --checkpoint-file <model.pt> --duration-s 6 --width 3840 --height 2160 --out out.mp4
 cd ../microduck_rl
 
-# 6. 出片（冲刺跟拍 / 舞台 N 鸭齐舞）
+# 6. 秋千 360（AutoDL 4090D；third_party/microduck-playground）
+cd third_party/microduck-playground && uv sync
+uv run train Mjlab-Swing360-MicroDuck --env.scene.num-envs 64 --agent.max_iterations 5   # 冒烟
+uv run train Mjlab-Swing360-MicroDuck --env.scene.num-envs 4096 --agent.max_iterations 4000
+uv run scripts/evaluate_swing360_checkpoint.py <model.pt> --output eval.json --duration 60 --num-envs 16
+MUJOCO_GL=egl uv run --with imageio python scripts/render_swing360_play.py <model.pt> \
+    --out s4k.mp4 --metrics s4k.json --device cuda:0 --duration 60 --seed 101 --fps 25 --width 3840 --height 2160
+uv run --with imageio --with pillow python scripts/add_swing360_angle_overlay.py \
+    --input s4k.mp4 --metrics s4k.json --output swing360_4k.mp4 --font-size 140
+cd ../..
+
+# 7. 出片（冲刺跟拍 / 舞台 N 鸭齐舞）
 uv run python scripts/sprint_show.py --policy sprint.onnx   # 成片输出到 artifacts/sprint_show/
 uv run python scripts/stage_show.py --policy dance.onnx \
     --timeline ../../dance/songs/<歌>.timeline.json \
@@ -128,13 +155,14 @@ uv run python scripts/stage_show.py --policy dance.onnx \
 - 舞蹈项目：11 轮训练 + 环境配置，约 **¥35**；单轮快训（1000 步）约 ¥1、正式（4000 步）约 ¥4
 - 篮球项目：HF 快照下载 + 冒烟 + 500 轮续训 + 3 档 × 3 seed 验收电池 + 5 次渲染，约 **¥5**
 - 高跷项目：37 级课程 4.5h + 8 里程碑门禁评估，约 **¥8.5**（4K 出片为本地 CPU，零租金）
+- 秋千 360 项目：v1–v3 配方迭代（2000 轮快试）+ 4000 轮正式 + 逐 seed 4K 扫描/出片，约 **¥12**
 
 详见 `docs/03-training-log.md`（两项目全程逐轮记录）。`artifacts/`（checkpoint、ONNX、评估 JSON、成片）体积大不入库。
 
 ## 致谢
 
 - [pollen-robotics/microduck](https://github.com/pollen-robotics/microduck) 与 [microduck_rl](https://github.com/pollen-robotics/microduck_rl)——机器人、训练框架与 sim2real 配方（其 AGENTS.md 是本项目的奖励设计圣经）
-- [Vottivott/microduck-playground](https://github.com/Vottivott/microduck-playground)（Hannes von Essen）——running 极速配方与评估电池口径、[microduck-basketball](https://huggingface.co/HannesVonEssen/microduck-basketball) 盲 LSTM 平衡配方与发布 checkpoint、[microduck-stilts](https://huggingface.co/HannesVonEssen/microduck-stilts) 踩高跷课程 lineage 与 TRAINING.md
+- [Vottivott/microduck-playground](https://github.com/Vottivott/microduck-playground)（Hannes von Essen）——running 极速配方与评估电池口径、[microduck-basketball](https://huggingface.co/HannesVonEssen/microduck-basketball) 盲 LSTM 平衡配方与发布 checkpoint、[microduck-stilts](https://huggingface.co/HannesVonEssen/microduck-stilts) 踩高跷课程 lineage 与 TRAINING.md、[microduck-swing](https://huggingface.co/HannesVonEssen/microduck-swing) 柔性吊绳秋千任务（360° 项目的改造起点）
 - [mjlab](https://github.com/mujocolab/mjlab)、[BAM](https://github.com/Rhoban/bam)
 
 License: 代码 Apache 2.0（遵循上游）；3D 模型文件 CC BY-SA-NC（上游资产）。

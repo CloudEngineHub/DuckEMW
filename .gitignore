@@ -24,6 +24,11 @@ artifacts/stilts_repro/*
 !artifacts/stilts_repro/completed.tsv
 !artifacts/stilts_repro/curriculum_status.log
 
+# 例外：秋千 360 成片遥测（小文件，随视频文案开源）
+!artifacts/swing360_v3/
+artifacts/swing360_v3/*
+!artifacts/swing360_v3/swing360_4k_7turns_metrics.json
+
 # 调试会话导出
 kimi-debug-session_*/
 kimi-debug-session_*.zip
