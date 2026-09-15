@@ -7,6 +7,7 @@
    git log --oneline develop..upstream/develop   # 有新提交就 merge/rebase 进我们的 develop
    ```
    我们的改动只在 develop 分支的增量 commit 上（Dance 任务相关），与上游文件尽量保持纯新增，降低合并冲突。
+   `third_party/microduck-playground` 同理：`upstream` = `Vottivott/microduck-playground`，`origin` = 我们的 fork；开工前 `git fetch upstream`，看 `swing360..upstream/main` 有无新提交。我们的工作分支是 `swing360`（本地 `main` 只跟踪 `upstream/main`，不在上面改）。注意上游 2026-09 有过一次事故后重写历史（force-push），同步一律用 rebase，不要 merge 旧历史。
 2. **修改必重训，同方才续训**：任何代码/奖励/编舞修改 → 从零重训；只有「同配方、只是加步数」（如 1000 步验证不错 → 继续到 2000/4000）才从 checkpoint 续训（`--agent.load-checkpoint model_XXX.pt --agent.resume True`）。
 3. **迭代节奏**：奖励配方实验用 **2000 迭代**快速试（~1h/¥2），配方定了再跑 **4000 迭代**出正式策略（~2h/¥4）。
 4. **成本纪律（用户对费用敏感）**：只用 **4090D**（¥1.88/h）；缺货时等待重试或**先问用户**，绝不擅自换更贵规格（如 vGPU/5090）。训练完成后**不自动关机，等用户指示**；用户明确说不用了才 `off`；长期不用经用户确认后 `release`（关机仍收磁盘费）。训练先冒烟（64 envs × 5 iters）再正式。
