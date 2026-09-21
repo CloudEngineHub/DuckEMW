@@ -197,3 +197,22 @@
 - **混沌漂移注意（复现 Sprint 教训）**：warp GPU 求解器非比特确定——73.6 N 是首轮评估的真实读数，同 seed 复测漂到 39.3 N（纪录量级不变，具体数字看哪次 rollout）。评估脚本已加 TOP ballistic env 打印便于跟拍最强 env。
 - 产物：artifacts/beakforce_v3/（失败存档）、artifacts/beakforce_v2r/（新纪录 ckpt/ONNX/视频/日志）。
 - 成本：v3 ¥2.3 + 续训 ¥2.3；实例 pro-78811e875f25 保持开机（用户指示暂不关机）。
+
+## Desk-Climb 爬梯复现 + 优化实验（2026-09-21 晚 ~ 22 凌晨）
+
+- **任务**：复现 `HannesVonEssen/microduck-climb`（爬 27 级交替梯上桌 + 桌面跌倒恢复，climber@56500 + getup 双策略，源 `experiments/desk-climb/`，昨天已随上游同步进仓）。复现必须用包内 `source/` 独立快照（爬梯代码从未进主 src 树）+ `uv sync --frozen`。
+- **管线**：`autodl/run_climb_pipeline.sh`（本地编排）+ `autodl/run_climb.sh`（实例端，断点续跑）+ `autodl/audit_climb_eval.py`（从 switches.json+actions.npz 复算 full-audit 口径指标）+ `autodl/phase4a_triggers.sh` / `phase4bc.sh` / `finalize_climb.sh`。等 4090D 卡 ~1.5h，实算 ~3h。
+- **复现电池（4 seeds×64 envs×60s 全序列，对齐 evidence/full-audit 口径）**：
+  | 臂 | 切换 | 站立10s | 结论 |
+  |---|---|---|---|
+  | 官方发布策略（我们 4090D 复现） | 197/256 (77%) | 100/256 (39%) | vs 官方 210/105，warp 硬件漂移范围内 ✅ |
+  | **续训 climber 250 iters + 官方 getup** | **222/256 (87%)** | 104/256 (41%) | **切换率 +12pp，采纳** |
+  | 续训 climber + 续训 getup 128 | 229/256 | **76/256 (30%)** | getup 续训掉点，弃用——独立验证了作者 ASSESSMENT「候选不再提升」 |
+  | 触发 root050 / spin2 | 214/218 | 103/100 | 与默认 supported_root 无差异 |
+  | 触发 both_feet | **9/256** | 1/256 | 灾难——策略到顶是单脚先落，双脚接触要求杀死序列 |
+  | **0.66 高度门修正臂**（TRAINING.md 留的对照） | **149/256 (58%)** | 54/256 | 大输：恢复区收紧 8cm 直接砍掉爬升段表现，.74 旧门限的对照臂选择被反向验证 |
+  | getup 从零重训 travel cost=1.0 | 227/256 | 87/256 (34%) | 仍不及官方 41%，无增益 |
+- **核心结论**：**唯一稳赚的优化是 climber 续训**（250 iters/1110s/¥0.6，切换率 82%→87%）；getup 41% 站立率是硬瓶颈，128 迭代级 PPO 微调（续训/换代价）都不动它，要突破需改恢复训练配方本身（姿态银行覆盖、恢复区课程），不是小步续训的事。
+- **坑备忘**：① `mdp.py` 硬编码 `/scratch/floor-desk/...` 的 bank 路径（原开发机残留），实例上 sed 成包内 `training/balanced-bank.json`；② `training/run.py` 的 `env.update` 无条件覆盖外部环境变量，消融旋钮要 sed 改成 `os.environ.get` 留门；③ runner 自动导出的 ONNX `default_joint_pos/joint_names` 是 15 维（带 mocap），过不了 evaluate_sequence 的 14 维元数据校验——**交付级 ONNX 必须走 `scripts/export.py` 官方导出器**；④ 实例首轮评估 env26 物理 NaN（同 seed 重跑 finite，之后 30+ 次评估零复发），warp 数值偶发，评估器按设计 fail-stop；⑤ ssh 里 nohup 要 `< /dev/null` 否则会话不返回。
+- **产物**：`artifacts/desk_climb/models/`（`climber-cont-official.onnx` 官方导出器版 + `climber-cont56750.pt`；弃用臂的 ckpt 留档）、`artifacts/desk_climb/evals/`（各电池 switches.json + 日志）。基线电池轻量产物在 `artifacts/desk_climb/desk-eval-s*/`。
+- **成本**：全程约 **¥13.4**（余额 76.58→63.21）；实例 pro-78811e875f25 已于 02:57 `off`（用户明确要求训练完关机）。
