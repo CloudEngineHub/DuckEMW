@@ -218,3 +218,10 @@
 - **成本**：全程约 **¥13.4**（余额 76.58→63.21）；实例 pro-78811e875f25 已于 02:57 `off`（用户明确要求训练完关机）。
 - **测试视频（2026-09-22 早）**：`artifacts/desk_climb/climb-cont-s19923.mp4`（720p45s，osmesa 软渲约 37min）——续训 climber + 官方 getup 完整序列：地面起步逐级爬梯 → ~10.6s 上桌（头部磕桌沿前扑）→ getup 接管恢复 → 站直并持续站到片尾（~33s）。渲染脚本 `experiments/desk-climb/training/render_climb_video.py`（单 env + VideoRecorder，复刻 official 切换/滤波/增益契约）。注意 ssh 里跑长任务要 nohup + `< /dev/null`；osmesa 渲染吃 CPU 不吃 GPU。
 - **HF 风格化视频（2026-09-22 午）**：`artifacts/desk_climb/climb-hf2-square.mp4`（720×720，30s）——木梯/白腿浅木桌/橙脚橙喙/暖光，对齐官方 preview 观感。爬梯 0–10.5s → 上桌翻滚（切换 @10.70s，spin 5.85）→ getup 秒级恢复 → 稳定站立 ~18s。**风格化要点**：机器人配色要用 MJCF 命名材质（foot/ankle/sole/jaw/bottom_head_shell 共 9 个），且编译后材质名带实体前缀（`robot/xxx`），按前缀剥离后匹配；梯子/桌面直接改 geom_rgba。椅子是作者私有分支的装饰件，全包无模型。本轮渲染+导出约 ¥7.6（余额 63.21→55.61）。
+
+## 简易直楼梯 + 跳台探索（2026-09-22 ~ 23，跳跃线判决轮收尾）
+
+- **simple_stairs（迈步路线，3 臂全败）**：全宽 60mm 踏级 + 30mm 级高起步即硬难度；v1 卡 2 级前倒、v2 发现 riser 被 reset 钳到 29mm 下限、v2r 续训判决（ck4000=ck6200 零进步，"加步数"证伪）、v3 侧目标假设证伪。根因：29-30mm 超出官方步态家族 ~25mm 迈步包络（FK 实测官方抬脚净空 median 66.6/p10 34.7mm）。历程与产物全在 `artifacts/simple_stairs/JOURNEY.md`。
+- **jump_step（跳跃路线，4 轮配方迭代）**：v4 面壁死锁 → v5 站桩盆地 → v6 趴台盆地 → v7 单脚踩台盆地，每轮探针精确确诊+对症修法，行为链真实推进（站桩→接近→趴台→首脚踏台），但远台出生完整成功率仍 0。判决轮后按约定停止迭代。环境 bug `rel_forward_envs`（20% 局平台变 30cm 悬空）已修并记入 JOURNEY。
+- **成本纪律升级（原则 3/4 已入库 a89b33e/473fef9）**：envs 分档（探索 1024、定稿 4096——我们的约定非官方标准）、余额 <¥15 先请示、CPU 活挪出 GPU。两天共烧 ¥67（余额 76.58→9.64，后用户充值）。
+- 产物：`artifacts/simple_stairs/`（JOURNEY.md、12 份评估 JSON、5 个 ckpt、8 条行为视频）；跳台环境 `microduck_jump_step_env_cfg.py`（子模块 4 个 commit）。
