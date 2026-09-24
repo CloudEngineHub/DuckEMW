@@ -232,3 +232,11 @@
 - 产物：artifacts/simple_stairs/（v9 ckpt、4 份评估 JSON、air50 渲染视频）；详见 JOURNEY.md。
 - **成本纪律升级（原则 3/4 已入库 a89b33e/473fef9）**：envs 分档（探索 1024、定稿 4096——我们的约定非官方标准）、余额 <¥15 先请示、CPU 活挪出 GPU。两天共烧 ¥67（余额 76.58→9.64，后用户充值）。
 - 产物：`artifacts/simple_stairs/`（JOURNEY.md、12 份评估 JSON、5 个 ckpt、8 条行为视频）；跳台环境 `microduck_jump_step_env_cfg.py`（子模块 4 个 commit）。
+
+## 跳台 v11 + 跳跃线封盘（2026-09-24 午）
+
+- **v11（弹道出生，用户拍板 A）**：`SPAWN_BALLISTIC` 起跳瞬间出生（台前 5-15cm、物理反解初速度 vz 1.08-1.85 / vx 0.19-0.79 m/s，顶点必超台面、落点台心），教飞行管理中段；ballistic 0.5 课程递减 + airborne 0.2 常量防稀释（7b12ff5）。
+- **判决放弃**（用户预设标准：1300-1400 轮无双 rate 翘头即弃）：1572 轮提前杀训。ballistic_rate 0.001 / airborne_rate 0.0064 全程贴地（v10 同期 0.115 后冲 0.48）；确定性评估 ballistic 落台 1.9%→1.1% 退化中，floor 全 0。
+- **跳跃线 v4-v11 八轮封盘**：空中落台（末端）可教 58%，弹道（中段）+起跳（初段）在 PPO 探索框架下点不着，exploration gap 是结构性的。深蹲蓄力（v8）+落台站稳（v9）两块拼图留存。
+- **候选路线（待用户定）**：回 25mm 迈步爬楼梯（需给上游 reset 29mm 钳制打补丁）或彻底换题。跳跃线产物全量归档 artifacts/simple_stairs/（8 轮 JOURNEY、19 份评估、10 个 ckpt、12 条视频）。
+- 成本：v11 约 ¥1.8（47min 提前终止），实例 11:05 已关机，余额 ¥85.57。
