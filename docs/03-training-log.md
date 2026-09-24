@@ -255,3 +255,11 @@
 - **v13 = F1（stall 税 w2.0/2s）+ F2（clearance 0.05）**（0fbe7e1，从零重训）：retreat 农场 0.44→0.04 治愈，但 fall 0.25→0.99 灾难倒退——站桩还是级间稳定支点，一刀切禁掉后政策"不敢歇也连不上步"。s36"罚堆过重使退出变优"前科复现。
 - **教训**：拆农场前先确认农场行为是否在承重。候选 v14 单变量：stall_s 2→4s + w 2→1；若 fall 压不回 0.25 则以 v12-ck3998 收官。
 - 产物归档 artifacts/simple_stairs/；实例 21:20 已关机。
+
+## 普通楼梯 v14+v14c：stall 税甜区——中位数 9 级，只剩顶台收束（2026-09-24 晚 ~ 25 凌晨）
+
+- **v14**（a97802f，stall_s 4s + w 1.0）：retreat 农场 0.01 死、rise_p90 冲 11 级（技能点燃）、fall 0.99。stall 税甜区 = w1.0/s4s（v13 的 w2/s2 罚死、v12 的无税农场之间）。
+- **v14c 续训**：`ladder_level` 三代首次升档 **0→3.2**；`upward_progress` 0.043→0.16；**rise_p50 L2-L3 = 9.0 级**（中位数 2→9 质变）。fall 1.00/TOP 0/final −0.07m：全部摔回地板。视频：4 秒稳爬 9 级 → 顶沿上台失败翻落。
+- **用户洞察**（已确认）：Hannes 到顶也是摔——官方答案是 climber+getup 接力（getup 在 artifacts/desk_climb/ 现成）；我们的摔多数摔回楼下（非生产性摔），顶台收束是唯一剩余瓶颈。
+- **v15 候选**：顶部 nearly-done spawn（tread 8-11 出生教上台）+ MICRODUCK_WARM_START 从 v14c-ck3998 暖启动。
+- 产物归档 artifacts/simple_stairs/（v14/v14c 共 6 ckpt、6 评估、2 视频）；实例 01:45 关机，余额 ¥64.36。
