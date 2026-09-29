@@ -1,0 +1,539 @@
+{
+ "config": {
+  "checkpoint_file": "logs/rsl_rl/simple_stairs/2026-09-29_07-14-14_simple_stairs/model_1500.pt",
+  "task_id": "Mjlab-SimpleStairs-MicroDuck",
+  "num_envs": 512,
+  "duration_s": 20.0,
+  "levels": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "climb_speed": 0.04,
+  "floor_spawn_prob": 0.5,
+  "seed": 123,
+  "output_file": "logs/eval-v21c-ck1500.json",
+  "video_dir": null,
+  "video_envs": 4,
+  "video_level": null,
+  "skip_hold": false,
+  "swing_spawn_prob": 0.0,
+  "swing_check_s": 1.5,
+  "trace": false,
+  "trace_every": 5
+ },
+ "results": [
+  {
+   "level": 0,
+   "command": "climb 0.04 m/s",
+   "riser_m": [
+    0.015000068582594395,
+    0.016999782994389534
+   ],
+   "angle_deg": [
+    13.0007963180542,
+    13.599817276000977
+   ],
+   "ladder_spawn": {
+    "count": 246,
+    "fall_fraction": 0.9999999403953552,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.12318699061870575,
+    "final_rise_m_p50": -0.12436681985855103,
+    "max_rise_risers_p50": 1.6983267068862915,
+    "max_rise_risers_p90": 2.034389019012451,
+    "body_touch_step_fraction": 0.25757724046707153,
+    "swing_landed_fraction": 0.0,
+    "swing_retreated_fraction": 0.016260161995887756,
+    "fall_forward_fraction": 0.37804877758026123,
+    "fall_backward_fraction": 0.05691056698560715,
+    "fall_sideways_fraction": 0.9390243291854858
+   },
+   "floor_spawn": {
+    "count": 266,
+    "fall_fraction": 1.0,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.04163730889558792,
+    "final_rise_m_p50": -0.06351657211780548,
+    "max_rise_risers_p50": 11.229288101196289,
+    "max_rise_risers_p90": 11.377610206604004,
+    "body_touch_step_fraction": 0.39984965324401855,
+    "swing_landed_fraction": 0.30451127886772156,
+    "swing_retreated_fraction": 0.007518797181546688,
+    "fall_forward_fraction": 0.853383481502533,
+    "fall_backward_fraction": 0.015037594363093376,
+    "fall_sideways_fraction": 0.36090224981307983
+   },
+   "all": {
+    "count": 512,
+    "fall_fraction": 1.0,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.08081938326358795,
+    "final_rise_m_p50": -0.07271740585565567,
+    "max_rise_risers_p50": 1.8038697242736816,
+    "max_rise_risers_p90": 11.350014686584473,
+    "body_touch_step_fraction": 0.33149221539497375,
+    "swing_landed_fraction": 0.158203125,
+    "swing_retreated_fraction": 0.01171875,
+    "fall_forward_fraction": 0.625,
+    "fall_backward_fraction": 0.03515625,
+    "fall_sideways_fraction": 0.638671875
+   }
+  },
+  {
+   "level": 0,
+   "command": "hold",
+   "riser_m": [
+    0.015000068582594395,
+    0.016999782994389534
+   ],
+   "angle_deg": [
+    13.0007963180542,
+    13.599817276000977
+   ],
+   "ladder_spawn": {
+    "count": 512,
+    "fall_fraction": 0.279296875,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.0500580258667469,
+    "final_rise_m_p50": -0.02197110652923584,
+    "max_rise_risers_p50": 0.0,
+    "max_rise_risers_p90": 1.7837164402008057,
+    "body_touch_step_fraction": 0.7303125262260437,
+    "swing_landed_fraction": 0.2578125,
+    "swing_retreated_fraction": 0.3828125,
+    "fall_forward_fraction": 0.16083915531635284,
+    "fall_backward_fraction": 0.03496503457427025,
+    "fall_sideways_fraction": 0.8181818127632141
+   },
+   "floor_spawn": {
+    "count": 0
+   },
+   "all": {
+    "count": 512,
+    "fall_fraction": 0.279296875,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.0500580258667469,
+    "final_rise_m_p50": -0.02197110652923584,
+    "max_rise_risers_p50": 0.0,
+    "max_rise_risers_p90": 1.7837164402008057,
+    "body_touch_step_fraction": 0.7303125262260437,
+    "swing_landed_fraction": 0.2578125,
+    "swing_retreated_fraction": 0.3828125,
+    "fall_forward_fraction": 0.16083915531635284,
+    "fall_backward_fraction": 0.03496503457427025,
+    "fall_sideways_fraction": 0.8181818127632141
+   }
+  },
+  {
+   "level": 1,
+   "command": "climb 0.04 m/s",
+   "riser_m": [
+    0.01700192131102085,
+    0.0199995469301939
+   ],
+   "angle_deg": [
+    13.61203670501709,
+    15.297121047973633
+   ],
+   "ladder_spawn": {
+    "count": 237,
+    "fall_fraction": 0.9999999403953552,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.08915132284164429,
+    "final_rise_m_p50": -0.11322607100009918,
+    "max_rise_risers_p50": 4.042482376098633,
+    "max_rise_risers_p90": 9.090907096862793,
+    "body_touch_step_fraction": 0.44896623492240906,
+    "swing_landed_fraction": 0.3417721390724182,
+    "swing_retreated_fraction": 0.0,
+    "fall_forward_fraction": 0.6835442781448364,
+    "fall_backward_fraction": 0.09704640507698059,
+    "fall_sideways_fraction": 0.3037974536418915
+   },
+   "floor_spawn": {
+    "count": 275,
+    "fall_fraction": 0.9927272796630859,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.007554964628070593,
+    "final_rise_m_p50": -0.06099070608615875,
+    "max_rise_risers_p50": 10.956318855285645,
+    "max_rise_risers_p90": 11.225618362426758,
+    "body_touch_step_fraction": 0.45265820622444153,
+    "swing_landed_fraction": 0.43272727727890015,
+    "swing_retreated_fraction": 0.003636363660916686,
+    "fall_forward_fraction": 0.8791208863258362,
+    "fall_backward_fraction": 0.007326007355004549,
+    "fall_sideways_fraction": 0.1684981733560562
+   },
+   "all": {
+    "count": 512,
+    "fall_fraction": 0.99609375,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.045325152575969696,
+    "final_rise_m_p50": -0.06583600491285324,
+    "max_rise_risers_p50": 9.00778865814209,
+    "max_rise_risers_p90": 11.183380126953125,
+    "body_touch_step_fraction": 0.4509492516517639,
+    "swing_landed_fraction": 0.390625,
+    "swing_retreated_fraction": 0.001953125,
+    "fall_forward_fraction": 0.7882353663444519,
+    "fall_backward_fraction": 0.04901961237192154,
+    "fall_sideways_fraction": 0.23137256503105164
+   }
+  },
+  {
+   "level": 1,
+   "command": "hold",
+   "riser_m": [
+    0.01700192131102085,
+    0.0199995469301939
+   ],
+   "angle_deg": [
+    13.61203670501709,
+    15.297121047973633
+   ],
+   "ladder_spawn": {
+    "count": 512,
+    "fall_fraction": 0.306640625,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.05438648536801338,
+    "final_rise_m_p50": -0.020722799003124237,
+    "max_rise_risers_p50": 0.0,
+    "max_rise_risers_p90": 1.405780553817749,
+    "body_touch_step_fraction": 0.7332090139389038,
+    "swing_landed_fraction": 0.306640625,
+    "swing_retreated_fraction": 0.345703125,
+    "fall_forward_fraction": 0.06369426846504211,
+    "fall_backward_fraction": 0.04458598792552948,
+    "fall_sideways_fraction": 0.5859872698783875
+   },
+   "floor_spawn": {
+    "count": 0
+   },
+   "all": {
+    "count": 512,
+    "fall_fraction": 0.306640625,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.05438648536801338,
+    "final_rise_m_p50": -0.020722799003124237,
+    "max_rise_risers_p50": 0.0,
+    "max_rise_risers_p90": 1.405780553817749,
+    "body_touch_step_fraction": 0.7332090139389038,
+    "swing_landed_fraction": 0.306640625,
+    "swing_retreated_fraction": 0.345703125,
+    "fall_forward_fraction": 0.06369426846504211,
+    "fall_backward_fraction": 0.04458598792552948,
+    "fall_sideways_fraction": 0.5859872698783875
+   }
+  },
+  {
+   "level": 2,
+   "command": "climb 0.04 m/s",
+   "riser_m": [
+    0.020001433789730072,
+    0.02199600636959076
+   ],
+   "angle_deg": [
+    15.304739952087402,
+    17.89282989501953
+   ],
+   "ladder_spawn": {
+    "count": 252,
+    "fall_fraction": 1.0,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.09585244953632355,
+    "final_rise_m_p50": -0.12373557686805725,
+    "max_rise_risers_p50": 5.67765474319458,
+    "max_rise_risers_p90": 9.839273452758789,
+    "body_touch_step_fraction": 0.4763214588165283,
+    "swing_landed_fraction": 0.547619104385376,
+    "swing_retreated_fraction": 0.0,
+    "fall_forward_fraction": 0.865079402923584,
+    "fall_backward_fraction": 0.0,
+    "fall_sideways_fraction": 0.1626984179019928
+   },
+   "floor_spawn": {
+    "count": 260,
+    "fall_fraction": 1.0,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": 0.01837710291147232,
+    "final_rise_m_p50": -0.039784885942935944,
+    "max_rise_risers_p50": 10.886565208435059,
+    "max_rise_risers_p90": 11.040173530578613,
+    "body_touch_step_fraction": 0.4796461760997772,
+    "swing_landed_fraction": 0.4615384638309479,
+    "swing_retreated_fraction": 0.0,
+    "fall_forward_fraction": 0.8461538553237915,
+    "fall_backward_fraction": 0.0,
+    "fall_sideways_fraction": 0.1884615421295166
+   },
+   "all": {
+    "count": 512,
+    "fall_fraction": 1.0,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.037845246493816376,
+    "final_rise_m_p50": -0.06527136266231537,
+    "max_rise_risers_p50": 8.907089233398438,
+    "max_rise_risers_p90": 10.999554634094238,
+    "body_touch_step_fraction": 0.47800979018211365,
+    "swing_landed_fraction": 0.50390625,
+    "swing_retreated_fraction": 0.0,
+    "fall_forward_fraction": 0.85546875,
+    "fall_backward_fraction": 0.0,
+    "fall_sideways_fraction": 0.17578125
+   }
+  },
+  {
+   "level": 2,
+   "command": "hold",
+   "riser_m": [
+    0.020001433789730072,
+    0.02199600636959076
+   ],
+   "angle_deg": [
+    15.304739952087402,
+    17.89282989501953
+   ],
+   "ladder_spawn": {
+    "count": 512,
+    "fall_fraction": 0.30859375,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.057639509439468384,
+    "final_rise_m_p50": -0.017698124051094055,
+    "max_rise_risers_p50": 0.0,
+    "max_rise_risers_p90": 1.3142527341842651,
+    "body_touch_step_fraction": 0.7068613767623901,
+    "swing_landed_fraction": 0.326171875,
+    "swing_retreated_fraction": 0.345703125,
+    "fall_forward_fraction": 0.08227848261594772,
+    "fall_backward_fraction": 0.08227848261594772,
+    "fall_sideways_fraction": 0.5569620132446289
+   },
+   "floor_spawn": {
+    "count": 0
+   },
+   "all": {
+    "count": 512,
+    "fall_fraction": 0.30859375,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.057639509439468384,
+    "final_rise_m_p50": -0.017698124051094055,
+    "max_rise_risers_p50": 0.0,
+    "max_rise_risers_p90": 1.3142527341842651,
+    "body_touch_step_fraction": 0.7068613767623901,
+    "swing_landed_fraction": 0.326171875,
+    "swing_retreated_fraction": 0.345703125,
+    "fall_forward_fraction": 0.08227848261594772,
+    "fall_backward_fraction": 0.08227848261594772,
+    "fall_sideways_fraction": 0.5569620132446289
+   }
+  },
+  {
+   "level": 3,
+   "command": "climb 0.04 m/s",
+   "riser_m": [
+    0.022005602717399597,
+    0.023994136601686478
+   ],
+   "angle_deg": [
+    17.902061462402344,
+    19.494918823242188
+   ],
+   "ladder_spawn": {
+    "count": 269,
+    "fall_fraction": 1.0,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.09149932861328125,
+    "final_rise_m_p50": -0.1161743700504303,
+    "max_rise_risers_p50": 5.877962589263916,
+    "max_rise_risers_p90": 9.850305557250977,
+    "body_touch_step_fraction": 0.5017397999763489,
+    "swing_landed_fraction": 0.5018587112426758,
+    "swing_retreated_fraction": 0.0,
+    "fall_forward_fraction": 0.8289963006973267,
+    "fall_backward_fraction": 0.0037174720782786608,
+    "fall_sideways_fraction": 0.20074349641799927
+   },
+   "floor_spawn": {
+    "count": 243,
+    "fall_fraction": 0.9999999403953552,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": 0.025635667145252228,
+    "final_rise_m_p50": -0.013560064136981964,
+    "max_rise_risers_p50": 10.867044448852539,
+    "max_rise_risers_p90": 10.959627151489258,
+    "body_touch_step_fraction": 0.48602059483528137,
+    "swing_landed_fraction": 0.4403291940689087,
+    "swing_retreated_fraction": 0.0,
+    "fall_forward_fraction": 0.806584358215332,
+    "fall_backward_fraction": 0.0,
+    "fall_sideways_fraction": 0.201646089553833
+   },
+   "all": {
+    "count": 512,
+    "fall_fraction": 1.0,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.03590596094727516,
+    "final_rise_m_p50": -0.06523207575082779,
+    "max_rise_risers_p50": 8.818304061889648,
+    "max_rise_risers_p90": 10.925056457519531,
+    "body_touch_step_fraction": 0.49427932500839233,
+    "swing_landed_fraction": 0.47265625,
+    "swing_retreated_fraction": 0.0,
+    "fall_forward_fraction": 0.818359375,
+    "fall_backward_fraction": 0.001953125,
+    "fall_sideways_fraction": 0.201171875
+   }
+  },
+  {
+   "level": 3,
+   "command": "hold",
+   "riser_m": [
+    0.022005602717399597,
+    0.023994136601686478
+   ],
+   "angle_deg": [
+    17.902061462402344,
+    19.494918823242188
+   ],
+   "ladder_spawn": {
+    "count": 512,
+    "fall_fraction": 0.330078125,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.06151031702756882,
+    "final_rise_m_p50": -0.013280123472213745,
+    "max_rise_risers_p50": 0.0,
+    "max_rise_risers_p90": 1.3273262977600098,
+    "body_touch_step_fraction": 0.6722598075866699,
+    "swing_landed_fraction": 0.32421875,
+    "swing_retreated_fraction": 0.333984375,
+    "fall_forward_fraction": 0.07692307978868484,
+    "fall_backward_fraction": 0.1538461595773697,
+    "fall_sideways_fraction": 0.6094674468040466
+   },
+   "floor_spawn": {
+    "count": 0
+   },
+   "all": {
+    "count": 512,
+    "fall_fraction": 0.330078125,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.06151031702756882,
+    "final_rise_m_p50": -0.013280123472213745,
+    "max_rise_risers_p50": 0.0,
+    "max_rise_risers_p90": 1.3273262977600098,
+    "body_touch_step_fraction": 0.6722598075866699,
+    "swing_landed_fraction": 0.32421875,
+    "swing_retreated_fraction": 0.333984375,
+    "fall_forward_fraction": 0.07692307978868484,
+    "fall_backward_fraction": 0.1538461595773697,
+    "fall_sideways_fraction": 0.6094674468040466
+   }
+  },
+  {
+   "level": 4,
+   "command": "climb 0.04 m/s",
+   "riser_m": [
+    0.02400280348956585,
+    0.02549568936228752
+   ],
+   "angle_deg": [
+    19.000782012939453,
+    19.999574661254883
+   ],
+   "ladder_spawn": {
+    "count": 265,
+    "fall_fraction": 1.0,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.10027218610048294,
+    "final_rise_m_p50": -0.14116692543029785,
+    "max_rise_risers_p50": 4.826852321624756,
+    "max_rise_risers_p90": 9.395387649536133,
+    "body_touch_step_fraction": 0.5270075798034668,
+    "swing_landed_fraction": 0.501886785030365,
+    "swing_retreated_fraction": 0.0,
+    "fall_forward_fraction": 0.8264151215553284,
+    "fall_backward_fraction": 0.007547169923782349,
+    "fall_sideways_fraction": 0.18490566313266754
+   },
+   "floor_spawn": {
+    "count": 247,
+    "fall_fraction": 0.9959514141082764,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": 0.025917869061231613,
+    "final_rise_m_p50": -0.04975266009569168,
+    "max_rise_risers_p50": 10.781896591186523,
+    "max_rise_risers_p90": 10.845023155212402,
+    "body_touch_step_fraction": 0.5038461685180664,
+    "swing_landed_fraction": 0.4089069068431854,
+    "swing_retreated_fraction": 0.0,
+    "fall_forward_fraction": 0.8292682766914368,
+    "fall_backward_fraction": 0.0,
+    "fall_sideways_fraction": 0.19512194395065308
+   },
+   "all": {
+    "count": 512,
+    "fall_fraction": 0.998046875,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.03939534351229668,
+    "final_rise_m_p50": -0.06516878306865692,
+    "max_rise_risers_p50": 7.79990816116333,
+    "max_rise_risers_p90": 10.824272155761719,
+    "body_touch_step_fraction": 0.5158340334892273,
+    "swing_landed_fraction": 0.45703125,
+    "swing_retreated_fraction": 0.0,
+    "fall_forward_fraction": 0.8277886509895325,
+    "fall_backward_fraction": 0.003913894295692444,
+    "fall_sideways_fraction": 0.18982386589050293
+   }
+  },
+  {
+   "level": 4,
+   "command": "hold",
+   "riser_m": [
+    0.02400280348956585,
+    0.02549568936228752
+   ],
+   "angle_deg": [
+    19.000782012939453,
+    19.999574661254883
+   ],
+   "ladder_spawn": {
+    "count": 512,
+    "fall_fraction": 0.35546875,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.0676928162574768,
+    "final_rise_m_p50": -0.012931883335113525,
+    "max_rise_risers_p50": 0.0,
+    "max_rise_risers_p90": 1.2230180501937866,
+    "body_touch_step_fraction": 0.6578535437583923,
+    "swing_landed_fraction": 0.294921875,
+    "swing_retreated_fraction": 0.34765625,
+    "fall_forward_fraction": 0.05494505539536476,
+    "fall_backward_fraction": 0.06043956056237221,
+    "fall_sideways_fraction": 0.5329670310020447
+   },
+   "floor_spawn": {
+    "count": 0
+   },
+   "all": {
+    "count": 512,
+    "fall_fraction": 0.35546875,
+    "reached_top_fraction": 0.0,
+    "final_rise_m_mean": -0.0676928162574768,
+    "final_rise_m_p50": -0.012931883335113525,
+    "max_rise_risers_p50": 0.0,
+    "max_rise_risers_p90": 1.2230180501937866,
+    "body_touch_step_fraction": 0.6578535437583923,
+    "swing_landed_fraction": 0.294921875,
+    "swing_retreated_fraction": 0.34765625,
+    "fall_forward_fraction": 0.05494505539536476,
+    "fall_backward_fraction": 0.06043956056237221,
+    "fall_sideways_fraction": 0.5329670310020447
+   }
+  }
+ ]
+}
